@@ -14,6 +14,29 @@ import org.apache.http.HttpStatus;
  * HttpClient已经过时了
  */
 public class HttpUrlConnectionUtil {
+
+	/**
+	 * 把GET、POST请求变成一个方法暴漏给外部（将原有的GET、POST请求方法变为private），这样减少了别人的学习成本
+	 * 根据method确定调用哪个请求
+	 * 
+	 * @throws IOException
+	 */
+
+	public String execute(Request request) throws IOException {
+		switch (request.method) {
+		case GET:
+		case DELETE:
+			return get(request);
+		case POST:
+		case PUT:
+			return post(request);
+
+		}
+
+		return null;
+
+	}
+
 	/**
 	 * HttpURLConnection:GET请求的基本写法
 	 * 
@@ -25,7 +48,7 @@ public class HttpUrlConnectionUtil {
 	public static String get(Request request) throws IOException {
 		HttpURLConnection connection = (HttpURLConnection) new URL(request.url)
 				.openConnection();
-		connection.setRequestMethod("GET");
+		connection.setRequestMethod(request.method.name());
 		connection.setConnectTimeout(15 * 3000);
 		connection.setReadTimeout(15 * 3000);
 
@@ -59,7 +82,7 @@ public class HttpUrlConnectionUtil {
 	public static String post(Request request) throws IOException {
 		HttpURLConnection connection = (HttpURLConnection) new URL(request.url)
 				.openConnection();
-		connection.setRequestMethod("POST");
+		connection.setRequestMethod(request.method.name());
 		connection.setConnectTimeout(15 * 3000);
 		connection.setReadTimeout(15 * 3000);
 		connection.setDoOutput(true);
