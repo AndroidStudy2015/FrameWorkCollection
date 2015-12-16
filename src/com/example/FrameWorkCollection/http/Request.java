@@ -41,4 +41,17 @@ public class Request {
 		this.method = method;
 	}
 
+//	★★★★★★★★★★★★★回调接口五步走★★★★★★★★★★★★★
+//	1.先建立这个接口interface，里面一般都会放几个抽象方法，供不同情况下当一块空心砖使用
+//	2.将此接口设为成员变量
+//	3.设置set方法
+//	4.在必须写完的流程的不确定节点上，静静地放上“接口.抽象方法”充当空心砖
+//	5.当调用者要走这个流程了，他必须把这块空心砖给实现了（即抽象方法给实现了）
+	public ICallback iCallback;
+
+	public void setCallback(ICallback iCallback) {
+		this.iCallback = iCallback;
+	}
+
+
 }

@@ -22,7 +22,7 @@ public class HttpUrlConnectionUtil {
 	 * @throws IOException
 	 */
 
-	public String execute(Request request) throws IOException {
+	public static String execute(Request request) throws IOException {
 		switch (request.method) {
 		case GET:
 		case DELETE:
