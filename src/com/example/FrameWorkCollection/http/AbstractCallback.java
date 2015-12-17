@@ -2,6 +2,8 @@ package com.example.FrameWorkCollection.http;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 
 import org.apache.http.HttpStatus;
@@ -10,6 +12,7 @@ import org.json.JSONObject;
 import com.google.gson.Gson;
 
 /**
+ * 基类，让所有的解析的Callback继承他，只需要写bindData即可实现不同的解析需求
  * 仅仅实现了ICallback中的parse方法，所以他还是一个抽象类
  * 这个类的作用主要是为了找个单独的地方放parse解析的过程，要不然直接在调用时候（即MainActivity）里写，太占地方了
  * 
@@ -17,9 +20,9 @@ import com.google.gson.Gson;
  * 
  * @param <T>
  */
-public abstract class Callback<T> implements ICallback<T> {
+public abstract class AbstractCallback<T> implements ICallback<T> {
 
-	private Class<T> clz;
+	// private Class<T> clz;
 
 	// 前两个方法不需要在这里实现，所以此处不实现
 
@@ -53,32 +56,33 @@ public abstract class Callback<T> implements ICallback<T> {
 			out.flush();
 			out.close();
 			String result = new String(out.toByteArray());
-
-			// ★如果按照以下方式解析，不需要json串和User类的所有键值对一一对应，可以选取json的一部分作为User类
-			// ★但是如果用原来的直接一键解析则，必须一一对应，缺一不可
-
-			// 解析上边的result,此时，他是一个json
-			JSONObject json = new JSONObject(result);
-			// 获取名为“data”的对应的值，并把这个值直接变成一个JSONObject
-			JSONObject data = json.optJSONObject("data");
-			Gson gson = new Gson();
-			// 返回解析data后得到的对象clz
-			return gson.fromJson(data.toString(), clz);
+			// ★此行以上的所有代码是公用的，所以抽取出来，而下面的方法需要根据不同情况去解析
+			return bindData(result);
 		}
 		return null;
 	}
 
 	/**
-	 * 告诉gson要解析成那个javabean
+	 * ★让子类去实现如何解析这个result（因为肯能result是xml，也可能是json，或者bitmap）
 	 * 
-	 * @param clz
-	 *            要解析成的类，如：User.class
+	 * @param result
 	 * @return
 	 */
-	public ICallback setReturnType(Class<T> clz) {
-		this.clz = clz;
-		return this;
+	protected abstract T bindData(String result) throws Exception;
 
-	}
+	// 有了 Type type = ((ParameterizedType) getClass().getGenericSuperclass())
+	// .getActualTypeArguments()[0];就不在需要下面的方法了
+	// /**
+	// * 告诉gson要解析成那个javabean
+	// *
+	// * @param clz
+	// * 要解析成的类，如：User.class
+	// * @return
+	// */
+	// public ICallback setReturnType(Class<T> clz) {
+	// this.clz = clz;
+	// return this;
+	//
+	// }
 
 }

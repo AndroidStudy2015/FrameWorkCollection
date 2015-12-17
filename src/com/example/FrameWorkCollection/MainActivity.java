@@ -1,6 +1,6 @@
 package com.example.FrameWorkCollection;
 
-import com.example.FrameWorkCollection.http.Callback;
+import com.example.FrameWorkCollection.http.JsonCallback;
 import com.example.FrameWorkCollection.http.ICallback;
 import com.example.FrameWorkCollection.http.Request;
 import com.example.FrameWorkCollection.http.RequestTask;
@@ -30,7 +30,7 @@ public class MainActivity extends Activity {
 		String content = "account=stay4it&password=123456";
 		Request request = new Request(url, Request.RequestMethod.POST);
 		// 此刻，我们想使用AsyncTask子线程里请求网络得到的数据result，如何将得到这个result呢，要用★★★★★回调★★★★★了，难点
-		request.setCallback(new Callback<String>() {
+		request.setCallback(new JsonCallback<String>() {
 
 			@Override
 			public void onSuccess(String result) {
@@ -58,7 +58,7 @@ public class MainActivity extends Activity {
 		String content = "account=stay4it&password=123456";
 		Request request = new Request(url, Request.RequestMethod.POST);
 		// 此刻，我们想使用AsyncTask子线程里请求网络得到的数据result，如何将得到这个result呢，要用★★★★★回调★★★★★了，难点
-		request.setCallback(new Callback<User>() {
+		request.setCallback(new JsonCallback<User>() {
 
 			@Override
 			public void onSuccess(User result) {
@@ -71,8 +71,7 @@ public class MainActivity extends Activity {
 				// TODO Auto-generated method stub
 				e.printStackTrace();
 			}
-			// 下面这句设计得很巧妙，setReturnType返回的是this，即Callback的对象，正好还可以放在这里当setCallback的参数使用
-		}.setReturnType(User.class));
+		});
 		request.content = content;
 		RequestTask task = new RequestTask(request);
 		task.execute();
