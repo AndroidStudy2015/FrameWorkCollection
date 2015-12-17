@@ -22,7 +22,7 @@ public class HttpUrlConnectionUtil {
 	 * @throws IOException
 	 */
 
-	public static String execute(Request request) throws IOException {
+	public static HttpURLConnection execute(Request request) throws IOException {
 		switch (request.method) {
 		case GET:
 		case DELETE:
@@ -45,7 +45,7 @@ public class HttpUrlConnectionUtil {
 	 * @return
 	 * @throws IOException
 	 */
-	public static String get(Request request) throws IOException {
+	public static HttpURLConnection get(Request request) throws IOException {
 		HttpURLConnection connection = (HttpURLConnection) new URL(request.url)
 				.openConnection();
 		connection.setRequestMethod(request.method.name());
@@ -54,21 +54,25 @@ public class HttpUrlConnectionUtil {
 
 		addHeader(request.headers, connection);
 
-		int status = connection.getResponseCode();
-		if (status == HttpStatus.SC_OK) {
-			ByteArrayOutputStream out = new ByteArrayOutputStream();
-			InputStream is = connection.getInputStream();
-			byte[] buffer = new byte[2048];
-			int len;
-			while ((len = is.read(buffer)) != -1) {
-				out.write(buffer, 0, len);
-			}
-			is.close();
-			out.flush();
-			out.close();
-			return new String(out.toByteArray());
-		}
-		return null;
+//		int status = connection.getResponseCode();
+//		if (status == HttpStatus.SC_OK) {
+//			ByteArrayOutputStream out = new ByteArrayOutputStream();
+//			InputStream is = connection.getInputStream();
+//			byte[] buffer = new byte[2048];
+//			int len;
+//			while ((len = is.read(buffer)) != -1) {
+//				out.write(buffer, 0, len);
+//			}
+//			is.close();
+//			out.flush();
+//			out.close();
+//			return new String(out.toByteArray());
+//		}
+//		return null;
+		
+//		★★★在这里我们不能再返回String了，因为网络上请求回来的数据不一定是String，
+//		我们可以先得到connection，然后在其他地方，根据实际情况去解析这个connection
+		return connection;
 	}
 
 	/**
@@ -79,7 +83,7 @@ public class HttpUrlConnectionUtil {
 	 * @return
 	 * @throws IOException
 	 */
-	public static String post(Request request) throws IOException {
+	public static HttpURLConnection post(Request request) throws IOException {
 		HttpURLConnection connection = (HttpURLConnection) new URL(request.url)
 				.openConnection();
 		connection.setRequestMethod(request.method.name());
@@ -96,22 +100,26 @@ public class HttpUrlConnectionUtil {
 		OutputStream os = connection.getOutputStream();
 		os.write(request.content.getBytes());
 
-		int status = connection.getResponseCode();
-		if (status == HttpStatus.SC_OK) {
-			ByteArrayOutputStream out = new ByteArrayOutputStream();
-			InputStream is = connection.getInputStream();
-			byte[] buffer = new byte[2048];
-			int len;
-			while ((len = is.read(buffer)) != -1) {
-				out.write(buffer, 0, len);
-			}
-			is.close();
-			out.flush();
-			out.close();
-			return new String(out.toByteArray());
-		}
-
-		return null;
+//		int status = connection.getResponseCode();
+//		if (status == HttpStatus.SC_OK) {
+//			ByteArrayOutputStream out = new ByteArrayOutputStream();
+//			InputStream is = connection.getInputStream();
+//			byte[] buffer = new byte[2048];
+//			int len;
+//			while ((len = is.read(buffer)) != -1) {
+//				out.write(buffer, 0, len);
+//			}
+//			is.close();
+//			out.flush();
+//			out.close();
+//			return new String(out.toByteArray());
+//		}
+//
+//		return null;
+		
+//		★★★在这里我们不能再返回String了，因为网络上请求回来的数据不一定是String，
+//		我们可以先得到connection，然后在其他地方，根据实际情况去解析这个connection
+		return connection;
 
 	}
 

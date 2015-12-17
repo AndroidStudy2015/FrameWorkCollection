@@ -1,9 +1,18 @@
 package com.example.FrameWorkCollection.http;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
 
 import android.os.AsyncTask;
 
+/**
+ * 在onPreExecute执行请求网络之前的准备工作<br>
+ * 在doInBackground执行网络请求的异步任务，得到connection，解析之，并返回请求结果<br>
+ * 在onPostExecute中处理请求结果（接口回调）<br>
+ * 
+ * @author kangou
+ * 
+ */
 public class RequestTask extends AsyncTask<Void, Integer, Object> {
 	private Request request;
 
@@ -21,9 +30,13 @@ public class RequestTask extends AsyncTask<Void, Integer, Object> {
 	protected Object doInBackground(Void... params) {
 		try {
 			// 访问网络要在子线程中运行
-			// 成功，返回请求到的结果，目前是String
-			return HttpUrlConnectionUtil.execute(request);
-		} catch (IOException e) {
+			// 成功，返回请求到的结果，原来是String，
+			// 现在变了：这里用首先得到connection（因为connection是共同的，之后怎么解析connection就有变化了），在通过parse解析得到result
+			HttpURLConnection connection = HttpUrlConnectionUtil
+					.execute(request);
+
+			return request.iCallback.parse(connection);
+		} catch (Exception e) {
 			// 失败,返回异常
 			return e;
 		}
@@ -39,7 +52,7 @@ public class RequestTask extends AsyncTask<Void, Integer, Object> {
 			// 在这里还有把这个接口对象归于谁的变量的问题，在这里这个接口是request请求参数的一个成员变量，并在其内部设置了set方法
 			request.iCallback.onFailure((Exception) o);
 		} else {
-			request.iCallback.onSuccess((String) o);
+			request.iCallback.onSuccess(o);
 		}
 	}
 }
